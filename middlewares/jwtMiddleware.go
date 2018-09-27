@@ -26,14 +26,14 @@ func CreateJWTMiddleware() (*jwt.GinJWTMiddleware, error) {
 	pwd, _ := os.Getwd()
 
 	authMiddleware, err := jwt.New(&jwt.GinJWTMiddleware{
-		Realm:            "test zone",
 		Timeout:          time.Hour,
 		MaxRefresh:       time.Hour * 24,
 		IdentityKey:      identityKey,
 		SigningAlgorithm: "RS256",
-		PrivKeyFile:      pwd + "/middlewares/private.key",
-		PubKeyFile:       pwd + "/middlewares/public.key.pub",
+		PrivKeyFile:      pwd + "/middlewares/jwtRS256.key",
+		PubKeyFile:       pwd + "/middlewares/jwtRS256.key.pub",
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
+			// to custom payload
 			if v, ok := data.(*User); ok {
 				return jwt.MapClaims{
 					identityKey: v.UserName,
@@ -42,6 +42,7 @@ func CreateJWTMiddleware() (*jwt.GinJWTMiddleware, error) {
 			return jwt.MapClaims{}
 		},
 		IdentityHandler: func(c *gin.Context) interface{} {
+			// to get user and use it to authorizator
 			claims := jwt.ExtractClaims(c)
 			return &User{
 				UserName: claims["id"].(string),

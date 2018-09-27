@@ -1,5 +1,5 @@
 .vscode
 vendor/*
 !vendor/vendor.json
-middlewares/private.key
-middlewares/public.key.pub
+middlewares/jwtRS256.key
+middlewares/jwtRS256.key.pub

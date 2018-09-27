@@ -18,5 +18,5 @@ jwt_keys_dir=middlewares
 jwt_pass=moviesapipasword
 
 jwt-keys: ## generate new jwt-keys for new projects
-	ssh-keygen -t rsa -b 4096 -f $(jwt_keys_dir)/private.key \
-	&& openssl rsa -in $(jwt_keys_dir)/private.key -pubout -outform PEM -out $(jwt_keys_dir)/public.key.pub
+	ssh-keygen -t rsa -b 4096 -f $(jwt_keys_dir)/jwtRS256.key \
+	&& openssl rsa -in $(jwt_keys_dir)/jwtRS256.key -pubout -outform PEM -out $(jwt_keys_dir)/jwtRS256.key.pub
