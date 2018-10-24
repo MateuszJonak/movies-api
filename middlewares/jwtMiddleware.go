@@ -4,23 +4,10 @@ import (
 	"os"
 	"time"
 
+	"github.com/MateuszJonak/movies-api/models"
 	jwt "github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"
 )
-
-type login struct {
-	Username string `form:"username" json:"username" binding:"required"`
-	Password string `form:"password" json:"password" binding:"required"`
-}
-
-var identityKey = "id"
-
-// User demo
-type User struct {
-	UserName  string
-	FirstName string
-	LastName  string
-}
 
 func CreateJWTMiddleware() (*jwt.GinJWTMiddleware, error) {
 	pwd, _ := os.Getwd()
@@ -28,15 +15,15 @@ func CreateJWTMiddleware() (*jwt.GinJWTMiddleware, error) {
 	authMiddleware, err := jwt.New(&jwt.GinJWTMiddleware{
 		Timeout:          time.Hour,
 		MaxRefresh:       time.Hour * 24,
-		IdentityKey:      identityKey,
+		IdentityKey:      models.IdentityKey,
 		SigningAlgorithm: "RS256",
 		PrivKeyFile:      pwd + "/middlewares/jwtRS256.key",
 		PubKeyFile:       pwd + "/middlewares/jwtRS256.key.pub",
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			// to custom payload
-			if v, ok := data.(*User); ok {
+			if v, ok := data.(*models.User); ok {
 				return jwt.MapClaims{
-					identityKey: v.UserName,
+					models.IdentityKey: v.UserName,
 				}
 			}
 			return jwt.MapClaims{}
@@ -44,20 +31,20 @@ func CreateJWTMiddleware() (*jwt.GinJWTMiddleware, error) {
 		IdentityHandler: func(c *gin.Context) interface{} {
 			// to get user and use it to authorizator
 			claims := jwt.ExtractClaims(c)
-			return &User{
+			return &models.User{
 				UserName: claims["id"].(string),
 			}
 		},
 		Authenticator: func(c *gin.Context) (interface{}, error) {
-			var loginVals login
-			if err := c.ShouldBind(&loginVals); err != nil {
+			var userLoginVals models.UserLogin
+			if err := c.ShouldBind(&userLoginVals); err != nil {
 				return "", jwt.ErrMissingLoginValues
 			}
-			userID := loginVals.Username
-			password := loginVals.Password
+			userID := userLoginVals.Username
+			password := userLoginVals.Password
 
 			if (userID == "admin" && password == "admin") || (userID == "test" && password == "test") {
-				return &User{
+				return &models.User{
 					UserName:  userID,
 					LastName:  "Bo-Yi",
 					FirstName: "Wu",
@@ -67,7 +54,7 @@ func CreateJWTMiddleware() (*jwt.GinJWTMiddleware, error) {
 			return nil, jwt.ErrFailedAuthentication
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
-			if v, ok := data.(*User); ok && v.UserName == "admin" {
+			if v, ok := data.(*models.User); ok && v.UserName == "admin" {
 				return true
 			}
 

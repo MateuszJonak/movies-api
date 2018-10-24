@@ -4,23 +4,17 @@ import (
 	"log"
 
 	"github.com/MateuszJonak/movies-api/middlewares"
+	"github.com/MateuszJonak/movies-api/models"
 	"github.com/appleboy/gin-jwt"
 	"github.com/gin-gonic/gin"
 )
 
-type login struct {
-	Username string `form:"username" json:"username" binding:"required"`
-	Password string `form:"password" json:"password" binding:"required"`
-}
-
-var identityKey = "id"
-
 func helloHandler(c *gin.Context) {
 	claims := jwt.ExtractClaims(c)
-	user, _ := c.Get(identityKey)
+	user, _ := c.Get(models.IdentityKey)
 	c.JSON(200, gin.H{
 		"userID":   claims["id"],
-		"userName": user.(*middlewares.User).UserName,
+		"userName": user.(*models.User).UserName,
 		"text":     "Hello World.",
 	})
 }
