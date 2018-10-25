@@ -18,6 +18,7 @@ func main() {
 	}
 
 	r.POST("/login", authMiddleware.LoginHandler)
+	r.POST("/signup", handlers.SignUp)
 
 	r.NoRoute(authMiddleware.MiddlewareFunc(), handlers.Error404)
 

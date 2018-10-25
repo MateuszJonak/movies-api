@@ -36,12 +36,12 @@ func CreateJWTMiddleware() (*jwt.GinJWTMiddleware, error) {
 			}
 		},
 		Authenticator: func(c *gin.Context) (interface{}, error) {
-			var userLoginVals models.UserLogin
-			if err := c.ShouldBind(&userLoginVals); err != nil {
+			var payload models.UserSignIn
+			if err := c.ShouldBind(&payload); err != nil {
 				return "", jwt.ErrMissingLoginValues
 			}
-			userID := userLoginVals.Username
-			password := userLoginVals.Password
+			userID := payload.Username
+			password := payload.Password
 
 			if (userID == "admin" && password == "admin") || (userID == "test" && password == "test") {
 				return &models.User{
