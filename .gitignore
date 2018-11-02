@@ -3,3 +3,4 @@ vendor/*
 !vendor/vendor.json
 middlewares/jwtRS256.key
 middlewares/jwtRS256.key.pub
+data

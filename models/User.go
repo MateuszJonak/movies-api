@@ -1,19 +1,15 @@
 package models
 
-type UserSignIn struct {
-	Username string `form:"username" json:"username" binding:"required"`
-	Password string `form:"password" json:"password" binding:"required"`
-}
+import "github.com/jinzhu/gorm"
 
-type UserSignUp struct {
-	Username  string `form:"username" json:"username" binding:"required"`
-	Password  string `form:"password" json:"password" binding:"required"`
+type User struct {
+	gorm.Model
+	Email     string `form:"email" json:"email" binding:"required" gorm:"unique;not null"`
+	Password  string `form:"password" json:"password" binding:"required" gorm:"not null"`
 	FirstName string `form:"firstName" json:"firstName"`
 	LastName  string `form:"lastName" json:"lastName"`
 }
 
-type User struct {
-	UserName  string
-	FirstName string
-	LastName  string
+func (User) TableName() string {
+	return "user"
 }

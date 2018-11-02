@@ -5,10 +5,14 @@ import (
 
 	"github.com/MateuszJonak/movies-api/handlers"
 	"github.com/MateuszJonak/movies-api/middlewares"
+	"github.com/MateuszJonak/movies-api/storage"
 	"github.com/gin-gonic/gin"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 func main() {
+	storage.Open()
+
 	r := gin.Default()
 
 	authMiddleware, err := middlewares.CreateJWTMiddleware()
@@ -33,4 +37,6 @@ func main() {
 
 	// Listen and serve on 0.0.0.0:8080
 	r.Run(":8080")
+
+	defer storage.CloseDB()
 }
