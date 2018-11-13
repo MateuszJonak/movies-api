@@ -1,13 +1,12 @@
 package storage
 
 import (
-	"github.com/MateuszJonak/movies-api/models"
+	"log"
+
 	"github.com/jinzhu/gorm"
-	"github.com/sirupsen/logrus"
 )
 
 var db *gorm.DB
-var logger = logrus.New()
 
 func Open() {
 	var err error
@@ -16,12 +15,10 @@ func Open() {
 		"root:pass@/moviesdb?charset=utf8&parseTime=True&loc=Local",
 	)
 	if err != nil {
-		logger.Error(err)
+		log.Fatal(err)
 		panic("failed to connect database")
 	}
-	logrus.Info("Open database connection")
-
-	db.AutoMigrate(&models.User{})
+	log.Printf("Open database connection")
 }
 
 func GetDB() *gorm.DB {

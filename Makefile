@@ -20,3 +20,6 @@ jwt_pass=moviesapipasword
 jwt-keys: ## generate new jwt-keys for new projects
 	ssh-keygen -t rsa -b 4096 -f $(jwt_keys_dir)/jwtRS256.key \
 	&& openssl rsa -in $(jwt_keys_dir)/jwtRS256.key -pubout -outform PEM -out $(jwt_keys_dir)/jwtRS256.key.pub
+
+install-cli:
+	go build -i -o ${GOPATH}/bin/moviesapi cli/movies.go
